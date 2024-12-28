@@ -72,20 +72,69 @@ class HashMap
   end
 
   def remove(key)
+    entry = @entries[hash(key) % @capacity]
+    node = entry.head
+    link_number = 0
+    until node == nil do
+      if node.value[0] == key
+        entry.remove_at(link_number)
+        return node.value[1]
+      end
+      node = node.next_node
+      link_number += 1
+    end
+    nil
   end
 
   def length
+    length = 0
+    @entries.each do |list|
+      node = list.head
+      until node == nil do
+        length += 1
+        node = node.next_node
+      end
+    end
+    length
   end
 
   def clear
+    @entries = Array.new(capacity) {LinkedList.new}
   end
 
   def keys
+    keys = []
+    @entries.each do |list|
+      node = list.head
+      until node == nil do
+        keys.append(node.value[0])
+        node = node.next_node
+      end
+    end
+    keys
   end
-  
+
   def values
+    values = []
+    @entries.each do |list|
+      node = list.head
+      until node == nil do
+        values.append(node.value[1])
+        node = node.next_node
+      end
+    end
+    values
   end
 
   def entries
+    entries = []
+    @entries.each do |list|
+      node = list.head
+      until node == nil do
+        entries.append(node.value)
+        node = node.next_node
+      end
+    end
+    entries
   end
 end

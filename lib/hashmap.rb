@@ -35,8 +35,8 @@ class HashMap
   end
 
   def has?(key)
-    index = hash(key)
-    node = @entries[index]
+    index = hash(key) % @capacity
+    node = @entries[index].head
     until node.nil? do
       return node if node.value[0] == key
       node = node.next_node

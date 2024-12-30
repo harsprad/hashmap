@@ -4,6 +4,7 @@ require_relative LINKED_LIST_LOCATION
 class HashMap
   attr_accessor :entries
   def initialize(capacity=16, load_factor=0.75)
+    @initial_capacity = capacity
     @capacity = capacity
     @load_factor = load_factor
 
@@ -100,6 +101,7 @@ class HashMap
   end
 
   def clear
+    @capacity = @initial_capacity
     @entries = Array.new(@capacity) {LinkedList.new}
   end
 

@@ -2,7 +2,8 @@ require_relative './linked-list-location'
 require_relative LINKED_LIST_LOCATION
 
 class HashMap
-  def inititialize(capacity=16, load_factor=0.75)
+  attr_accessor :entries
+  def initialize(capacity=16, load_factor=0.75)
     @capacity = capacity
     @load_factor = load_factor
 
@@ -36,7 +37,7 @@ class HashMap
   def has?(key)
     index = hash(key)
     node = @entries[index]
-    until node == nil do
+    until node.nil? do
       return node if node.value[0] == key
       node = node.next_node
     end
@@ -44,19 +45,19 @@ class HashMap
   end
 
   def buckets
-    @entries.drop_while{ |e| e == LinkedList.new }.size
+    @entries.count{ |e| ! e.head.nil? }
   end
 
   def grow
     old_entries = @entries.clone
     @capacity *= 2
-    @entries = Array.new(capacity) {LinkedList.new}
+    @entries = Array.new(@capacity) {LinkedList.new}
 
     # rehash
-    old_entries.each |list| do
+    old_entries.each do |list| 
       node = list.head
-      until node == nil do
-        set(node.value)
+      until node.nil? do
+        set(*node.value)
         node = node.next_node
       end
     end
@@ -64,7 +65,7 @@ class HashMap
 
   def get(key)
     node = @entries[hash(key) % @capacity].head
-    until node == nil do
+    until node.nil? do
       return node.value[1] if node.value[0] == key
       node = node.next_node
     end
@@ -75,7 +76,7 @@ class HashMap
     entry = @entries[hash(key) % @capacity]
     node = entry.head
     link_number = 0
-    until node == nil do
+    until node.nil? do
       if node.value[0] == key
         entry.remove_at(link_number)
         return node.value[1]
@@ -90,7 +91,7 @@ class HashMap
     length = 0
     @entries.each do |list|
       node = list.head
-      until node == nil do
+      until node.nil? do
         length += 1
         node = node.next_node
       end
@@ -99,14 +100,14 @@ class HashMap
   end
 
   def clear
-    @entries = Array.new(capacity) {LinkedList.new}
+    @entries = Array.new(@capacity) {LinkedList.new}
   end
 
   def keys
     keys = []
     @entries.each do |list|
       node = list.head
-      until node == nil do
+      until node.nil? do
         keys.append(node.value[0])
         node = node.next_node
       end
@@ -118,7 +119,7 @@ class HashMap
     values = []
     @entries.each do |list|
       node = list.head
-      until node == nil do
+      until node.nil? do
         values.append(node.value[1])
         node = node.next_node
       end
@@ -126,11 +127,11 @@ class HashMap
     values
   end
 
-  def entries
+  def put_entries
     entries = []
     @entries.each do |list|
       node = list.head
-      until node == nil do
+      until node.nil? do
         entries.append(node.value)
         node = node.next_node
       end
